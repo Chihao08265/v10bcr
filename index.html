@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CHIHABCR VIP v7.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-primary:#020408;--bg-secondary:#070b12;--bg-surface:#0d1320;
+  --bg-card:rgba(15,23,38,0.88);
+  --gold-primary:#ffb700;--gold-gradient:linear-gradient(135deg,#ffe066 0%,#ffb700 50%,#996600 100%);
+  --cyan-neon:#00f3ff;
+  --player-blue:#0077ff;--player-gradient:linear-gradient(135deg,#4da6ff 0%,#0077ff 50%,#0044cc 100%);
+  --banker-red:#ff1a40;--banker-gradient:linear-gradient(135deg,#ff4d6d 0%,#ff1a40 50%,#b3001b 100%);
+  --tie-green:#00e676;--tie-gradient:linear-gradient(135deg,#66ffa6 0%,#00e676 50%,#008040 100%);
+  --text-main:#fff;--text-muted:#8292ab;
+  --border-subtle:rgba(255,255,255,0.08);
+  --border-gold:rgba(255,183,0,0.35);--border-cyan:rgba(0,243,255,0.35);
+  --radius-xs:4px;--radius-sm:8px;--radius-md:14px;--radius-lg:24px;
+  --shadow-base:0 12px 35px rgba(0,0,0,0.85);
+}
+*{box-sizing:border-box;margin:0;padding:0;user-select:none;-webkit-user-select:none;touch-action:manipulation;}
+input,button,select,textarea{user-select:text;-webkit-user-select:text;}
+body{
+  font-family:'Rajdhani',sans-serif;background:var(--bg-primary);color:var(--text-main);
+  min-height:100vh;display:flex;justify-content:center;align-items:center;
+  background-image:
+    radial-gradient(circle at 50% 0%,rgba(0,243,255,0.07) 0%,transparent 60%),
+    radial-gradient(circle at 50% 100%,rgba(255,183,0,0.05) 0%,transparent 60%),
+    linear-gradient(to bottom,var(--bg-primary),var(--bg-secondary));
+  overflow-x:hidden;
+}
+.app-container{
+  width:100%;max-width:480px;height:100vh;max-height:960px;
+  background:var(--bg-surface);border:1px solid var(--border-gold);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow-base);
+  display:flex;flex-direction:column;position:relative;overflow:hidden;backdrop-filter:blur(25px);
+}
+.watermark-bg{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-32deg);
+  font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;
+  color:rgba(255,255,255,0.015);pointer-events:none;letter-spacing:10px;white-space:nowrap;z-index:0;
+}
+.app-header{
+  padding:14px 18px;background:rgba(7,11,18,0.95);
+  border-bottom:1px solid var(--border-cyan);
+  display:flex;justify-content:space-between;align-items:center;z-index:10;
+}
+.brand-wrapper{display:flex;align-items:center;gap:10px;}
+.brand-icon{
+  width:32px;height:32px;background:var(--gold-gradient);border-radius:var(--radius-xs);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-weight:900;color:#000;font-size:16px;
+}
+.brand-title-group h1{
+  font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;
+  background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.brand-title-group span{font-size:9px;color:var(--text-muted);text-transform:uppercase;}
+.status-wrapper{display:flex;align-items:center;gap:10px;}
+.role-pill{font-family:'Orbitron',sans-serif;font-size:9px;padding:3px 7px;border-radius:4px;font-weight:700;}
+.role-super-badge{background:rgba(255,183,0,0.2);border:1px solid var(--gold-primary);color:var(--gold-primary);}
+.role-member-badge{background:rgba(0,243,255,0.15);border:1px solid var(--cyan-neon);color:var(--cyan-neon);}
+.coin-pill{
+  display:flex;align-items:center;gap:5px;background:rgba(255,183,0,0.12);
+  border:1px solid rgba(255,183,0,0.4);padding:4px 10px;border-radius:20px;
+  font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;color:var(--gold-primary);
+}
+.nav-tabbar{display:flex;background:rgba(2,4,8,0.98);border-bottom:1px solid var(--border-subtle);z-index:10;}
+.nav-item{
+  flex:1;padding:12px 6px;border:none;background:transparent;color:var(--text-muted);
+  font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.8px;cursor:pointer;position:relative;
+}
+.nav-item.active{color:var(--cyan-neon);}
+.nav-item.active::after{
+  content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;background:var(--cyan-neon);
+}
+.auth-backdrop{
+  position:absolute;inset:0;background:rgba(2,4,8,0.97);z-index:1000;
+  display:flex;justify-content:center;align-items:center;padding:20px;backdrop-filter:blur(30px);
+  transition:opacity 0.4s,visibility 0.4s;overflow-y:auto;
+}
+.auth-box{
+  width:100%;max-width:400px;background:var(--bg-card);border:1px solid var(--border-gold);
+  border-radius:var(--radius-md);padding:30px 24px;
+}
+.auth-heading{text-align:center;margin-bottom:24px;}
+.auth-heading h2{font-family:'Orbitron',sans-serif;font-size:20px;color:var(--gold-primary);letter-spacing:2px;margin-bottom:6px;}
+.auth-heading p{font-size:11px;color:var(--text-muted);text-transform:uppercase;}
+.input-group{margin-bottom:14px;}
+.input-group label{display:block;font-size:11px;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+.input-field{
+  width:100%;background:rgba(0,0,0,0.7);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-sm);padding:12px 14px;color:var(--text-main);
+  font-family:'Share Tech Mono',monospace;font-size:14px;outline:none;
+}
+.input-field:focus{border-color:var(--cyan-neon);}
+.auth-msg{min-height:22px;font-size:11px;text-align:center;margin-bottom:12px;font-weight:700;}
+.auth-msg.error{color:var(--banker-red);}
+.auth-msg.success{color:var(--tie-green);}
+.btn-primary{
+  width:100%;padding:14px;border:none;border-radius:var(--radius-sm);
+  background:var(--gold-gradient);color:#000;font-family:'Orbitron',sans-serif;
+  font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;
+}
+.btn-primary:hover{filter:brightness(1.1);}
+.btn-primary:active{transform:scale(0.97);}
+.viewport-content{flex:1;overflow-y:auto;z-index:5;padding:14px;display:flex;flex-direction:column;gap:14px;}
+.panel-view{display:none;flex-direction:column;gap:14px;width:100%;}
+.panel-view.active{display:flex;}
+.card-container{
+  background:var(--bg-card);border:1px solid var(--border-subtle);
+  border-radius:var(--radius-md);padding:14px;
+}
+.card-header-row{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.05);gap:8px;
+}
+.card-label-title{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;}
+.ai-council-tags{display:flex;gap:5px;}
+.ai-tag{
+  font-size:8px;padding:2px 6px;border-radius:3px;
+  background:rgba(0,243,255,0.1);border:1px solid var(--border-cyan);
+  color:var(--cyan-neon);font-family:'Orbitron',sans-serif;font-weight:700;
+}
+.prediction-box-main{
+  text-align:center;padding:20px 0;background:rgba(0,0,0,0.5);
+  border-radius:var(--radius-sm);margin-bottom:12px;
+}
+.prediction-output-text{
+  font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;
+  letter-spacing:2px;min-height:40px;display:flex;align-items:center;justify-content:center;text-align:center;
+}
+.val-player{color:var(--player-blue);}
+.val-banker{color:var(--banker-red);}
+.val-standby{color:var(--gold-primary);font-size:13px;}
+.progress-block{display:flex;flex-direction:column;gap:4px;}
+.progress-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);font-weight:700;}
+.progress-track{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+.progress-fill-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--player-blue),var(--cyan-neon),var(--gold-primary));
+}
+.action-buttons-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px;}
+.btn-input-move{
+  padding:16px 0;border:none;border-radius:var(--radius-sm);
+  font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;cursor:pointer;
+}
+.btn-input-move:active{transform:scale(0.94);}
+.btn-input-move:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-player-action{background:var(--player-gradient);border:1px solid #4da6ff;}
+.btn-banker-action{background:var(--banker-gradient);border:1px solid #ff4d6d;}
+.btn-tie-action{background:var(--tie-gradient);border:1px solid #66ffa6;}
+.roadmap-container-scroll{display:flex;gap:6px;overflow-x:auto;padding:6px 0;}
+.road-ball{
+  width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;flex-shrink:0;
+}
+.ball-P{background:var(--player-gradient);color:#fff;border:1px solid #4da6ff;}
+.ball-B{background:var(--banker-gradient);color:#fff;border:1px solid #ff4d6d;}
+.ball-T{background:var(--tie-gradient);color:#fff;border:1px solid #66ffa6;}
+.stats-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.stat-card-box{
+  background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.04);
+  border-radius:var(--radius-xs);padding:10px 4px;text-align:center;
+}
+.stat-val-num{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:800;}
+.val-win{color:var(--tie-green);}
+.val-loss{color:var(--banker-red);}
+.val-rate{color:var(--cyan-neon);}
+.stat-desc-lbl{font-size:9px;color:var(--text-muted);text-transform:uppercase;margin-top:3px;}
+.history-list-scroll{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;padding-right:4px;}
+.history-row-item{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.04);
+  padding:8px 10px;border-radius:var(--radius-xs);font-size:11px;gap:6px;
+}
+.history-round-tag{font-family:'Orbitron',sans-serif;color:var(--text-muted);font-weight:700;}
+.history-info-detail{font-weight:600;flex:1;text-align:center;}
+.history-verdict-badge{
+  padding:2px 7px;border-radius:3px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:800;
+}
+.verdict-correct{background:rgba(0,230,118,0.15);color:var(--tie-green);border:1px solid var(--tie-green);}
+.verdict-incorrect{background:rgba(255,26,64,0.15);color:var(--banker-red);border:1px solid var(--banker-red);}
+.admin-controls-flex{display:flex;flex-direction:column;gap:10px;}
+.admin-row-btns{display:flex;gap:8px;}
+.btn-secondary-action{
+  background:rgba(0,243,255,0.1);border:1px solid var(--border-cyan);color:var(--cyan-neon);
+  padding:10px;border-radius:var(--radius-xs);font-family:'Orbitron',sans-serif;
+  font-size:11px;font-weight:700;cursor:pointer;flex:1;text-align:center;
+}
+.btn-secondary-action:hover{background:rgba(0,243,255,0.2);}
+.btn-danger-action{
+  background:rgba(255,26,64,0.1);border:1px solid var(--banker-red);color:var(--banker-red);
+  padding:8px 10px;border-radius:var(--radius-xs);font-family:'Orbitron',sans-serif;
+  font-size:10px;font-weight:700;cursor:pointer;
+}
+.btn-danger-action:hover{background:rgba(255,26,64,0.25);}
+.terminal-logs-box{
+  background:#000;border:1px solid rgba(0,243,255,0.25);border-radius:var(--radius-xs);
+  padding:8px;font-family:'Share Tech Mono',monospace;font-size:10px;
+  color:var(--cyan-neon);height:110px;overflow-y:auto;margin-top:6px;
+}
+.log-line{margin-bottom:2px;}
+.toast-notification{
+  position:absolute;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);
+  background:rgba(7,11,18,0.98);border:1px solid var(--gold-primary);color:#fff;
+  padding:10px 20px;border-radius:20px;font-size:11px;font-weight:700;
+  box-shadow:0 8px 25px rgba(0,0,0,0.9);transition:transform 0.3s;
+  z-index:2000;pointer-events:none;max-width:90%;text-align:center;
+}
+.toast-notification.active{transform:translateX(-50%) translateY(0);}
+.vault-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;padding-right:4px;}
+.vault-account-card{
+  background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);
+  border-radius:var(--radius-sm);padding:10px;
+}
+.vault-account-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px;}
+.vault-account-name{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:800;color:var(--text-main);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vault-account-meta{font-size:10px;color:var(--text-muted);margin-bottom:6px;display:flex;gap:10px;flex-wrap:wrap;}
+.vault-account-meta b{color:var(--gold-primary);font-weight:700;}
+.vault-account-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.vault-mini-btn{
+  flex:1;min-width:80px;padding:6px 8px;border-radius:var(--radius-xs);
+  font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border-cyan);background:rgba(0,243,255,0.08);color:var(--cyan-neon);
+}
+.vault-mini-btn:hover{background:rgba(0,243,255,0.2);}
+.vault-mini-btn.danger{border-color:var(--banker-red);background:rgba(255,26,64,0.08);color:var(--banker-red);}
+.vault-mini-btn.danger:hover{background:rgba(255,26,64,0.25);}
+.vault-mini-btn.gold{border-color:var(--gold-primary);background:rgba(255,183,0,0.1);color:var(--gold-primary);}
+.vault-mini-btn.gold:hover{background:rgba(255,183,0,0.25);}
+.vault-empty{text-align:center;padding:20px;color:var(--text-muted);font-size:11px;}
+.admin-inner-tabs{display:flex;gap:6px;margin-bottom:10px;}
+.admin-inner-tab{
+  flex:1;padding:8px;border-radius:var(--radius-xs);cursor:pointer;
+  background:rgba(0,0,0,0.35);border:1px solid var(--border-subtle);
+  color:var(--text-muted);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;
+}
+.admin-inner-tab.active{
+  background:rgba(0,243,255,0.12);border-color:var(--cyan-neon);color:var(--cyan-neon);
+}
+.admin-inner-panel{display:none;}
+.admin-inner-panel.active{display:block;}
+.sandbox-badge{
+  display:inline-block;font-size:8px;padding:2px 6px;border-radius:3px;
+  background:rgba(255,183,0,0.15);border:1px solid var(--gold-primary);
+  color:var(--gold-primary);font-family:'Orbitron',sans-serif;font-weight:700;margin-left:6px;
+}
+</style>
+</head>
+<body>
+<div class="app-container">
+  <div class="watermark-bg">CHIHABCR VIP</div>
+
+  <!-- LOGIN -->
+  <div class="auth-backdrop" id="authOverlay">
+    <div class="auth-box">
+      <div class="auth-heading">
+        <h2>CHIHABCR VIP</h2>
+        <p>Hệ Thống Đăng Nhập Bảo Mật</p>
+      </div>
+      <div class="input-group">
+        <label>Tài Khoản</label>
+        <input type="text" id="loginUsername" class="input-field" placeholder="Nhập tài khoản...">
+      </div>
+      <div class="input-group">
+        <label>Mật Khẩu Cấp 1</label>
+        <input type="password" id="loginPass1" class="input-field" placeholder="Mật khẩu cấp 1...">
+      </div>
+      <div class="input-group">
+        <label>Mật Khẩu Cấp 2</label>
+        <input type="password" id="loginPass2" class="input-field" placeholder="Mật khẩu cấp 2...">
+      </div>
+      <div class="auth-msg" id="authFeedbackMsg"></div>
+      <button class="btn-primary" onclick="processLoginAuthentication()">XÁC THỰC & KÍCH HOẠT</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-icon">C</div>
+      <div class="brand-title-group">
+        <h1>CHIHABCR v7.1</h1>
+        <span>Enterprise AI</span>
+      </div>
+    </div>
+    <div class="status-wrapper">
+      <span id="userRoleBadge" class="role-pill role-member-badge">GUEST</span>
+      <div class="coin-pill">
+        <span>🪙</span>
+        <span id="userCoinCounter">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav-tabbar">
+    <button class="nav-item active" onclick="switchAppTab('gamePanel', this)">⚡ BÀN CHƠI</button>
+    <button class="nav-item" onclick="switchAppTab('historyPanel', this)">📊 LỊCH SỬ</button>
+    <button class="nav-item" onclick="switchAppTab('adminPanel', this)">⚙️ ADMIN</button>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="viewport-content">
+    <!-- GAME PANEL -->
+    <div class="panel-view active" id="gamePanel">
+      <div class="card-container">
+        <div class="card-header-row">
+          <span class="card-label-title">HỘI ĐỒNG 3 AI PHÂN TÍCH</span>
+          <div class="ai-council-tags">
+            <span class="ai-tag">GPT 95%</span>
+            <span class="ai-tag">GEMINI 92%</span>
+            <span class="ai-tag">DEEPSEEK 35%</span>
+          </div>
+        </div>
+        <div class="prediction-box-main">
+          <div class="prediction-output-text val-standby" id="predictionOutputDisplay">BẤM 3 NÚT BÊN DƯỚI ĐỂ AI PHÂN TÍCH</div>
+        </div>
+        <div class="progress-block">
+          <div class="progress-meta">
+            <span>TIẾN TRÌNH NEURAL</span>
+            <span id="loadingPercentText">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill-bar" id="loadingBarFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-container">
+        <div class="card-header-row">
+          <span class="card-label-title">NHẬP KẾT QUẢ (TRỪ 2 🪙/VÁN)</span>
+        </div>
+        <div class="action-buttons-grid">
+          <button class="btn-input-move btn-player-action" onclick="registerRoundResult('P')">PLAYER</button>
+          <button class="btn-input-move btn-banker-action" onclick="registerRoundResult('B')">BANKER</button>
+          <button class="btn-input-move btn-tie-action" onclick="registerRoundResult('T')">TIE</button>
+        </div>
+      </div>
+
+      <div class="card-container">
+        <div class="card-header-row">
+          <span class="card-label-title">BẢNG CẦU LỊCH SỬ</span>
+        </div>
+        <div class="roadmap-container-scroll" id="roadmapBallsContainer"></div>
+      </div>
+    </div>
+
+    <!-- HISTORY PANEL -->
+    <div class="panel-view" id="historyPanel">
+      <div class="card-container">
+        <div class="card-header-row">
+          <span class="card-label-title">THỐNG KÊ HIỆU SUẤT</span>
+        </div>
+        <div class="stats-grid-3">
+          <div class="stat-card-box">
+            <div class="stat-val-num val-win" id="statWinsCount">0</div>
+            <div class="stat-desc-lbl">ĐÚNG</div>
+          </div>
+          <div class="stat-card-box">
+            <div class="stat-val-num val-loss" id="statLossesCount">0</div>
+            <div class="stat-desc-lbl">SAI</div>
+          </div>
+          <div class="stat-card-box">
+            <div class="stat-val-num val-rate" id="statAccuracyRate">0%</div>
+            <div class="stat-desc-lbl">TỶ LỆ</div>
+          </div>
+        </div>
+        <div class="card-header-row" style="margin-top:10px;">
+          <span class="card-label-title">NHẬT KÝ ĐÚNG / SAI</span>
+        </div>
+        <div class="history-list-scroll" id="accuracyHistoryListContainer"></div>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="panel-view" id="adminPanel">
+      <div class="admin-inner-tabs">
+        <button class="admin-inner-tab active" onclick="switchAdminInnerTab('vault', this)">🏦 KHO TÀI KHOẢN</button>
+        <button class="admin-inner-tab" onclick="switchAdminInnerTab('sandbox', this)">🎮 KHO NGƯỜI CHƠI</button>
+        <button class="admin-inner-tab" onclick="switchAdminInnerTab('sys', this)">🛠 HỆ THỐNG</button>
+      </div>
+
+      <div class="admin-inner-panel active" id="adminInnerVault">
+        <div class="card-container">
+          <div class="card-header-row">
+            <span class="card-label-title">TẠO TÀI KHOẢN MỚI</span>
+          </div>
+          <div class="admin-controls-flex">
+            <div class="input-group">
+              <label>Username</label>
+              <input type="text" id="vaultNewUsername" class="input-field" placeholder="vd: player01">
+            </div>
+            <div class="input-group">
+              <label>Mật khẩu cấp 1</label>
+              <input type="text" id="vaultNewPass1" class="input-field" placeholder="tối thiểu 3 ký tự">
+            </div>
+            <div class="input-group">
+              <label>Mật khẩu cấp 2 (tuỳ chọn)</label>
+              <input type="text" id="vaultNewPass2" class="input-field" placeholder="có thể để trống">
+            </div>
+            <div class="input-group">
+              <label>Xu khởi tạo</label>
+              <input type="number" id="vaultNewCoins" class="input-field" placeholder="200" value="200">
+            </div>
+            <button class="btn-primary" onclick="vaultCreateAccount()">TẠO TÀI KHOẢN</button>
+          </div>
+        </div>
+
+        <div class="card-container">
+          <div class="card-header-row">
+            <span class="card-label-title">DANH SÁCH TÀI KHOẢN <span id="vaultCountBadge" style="color:var(--gold-primary);">(0)</span></span>
+          </div>
+          <div class="vault-list" id="vaultAccountList"></div>
+        </div>
+      </div>
+
+      <div class="admin-inner-panel" id="adminInnerSandbox">
+        <div class="card-container">
+          <div class="card-header-row">
+            <span class="card-label-title">KHO NGƯỜI CHƠI — ADMIN TEST<span class="sandbox-badge">SANDBOX</span></span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-bottom:8px;">
+            Bàn chơi riêng cho admin test hệ thống. Không trừ xu thật, không ảnh hưởng dữ liệu người chơi khác.
+          </div>
+          <div class="prediction-box-main">
+            <div class="prediction-output-text val-standby" id="sandboxOutputDisplay">BẤM NÚT ĐỂ TEST</div>
+          </div>
+          <div class="progress-block">
+            <div class="progress-meta">
+              <span>SANDBOX ENGINE</span>
+              <span id="sandboxPercentText">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill-bar" id="sandboxBarFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-container">
+          <div class="card-header-row">
+            <span class="card-label-title">NHẬP KẾT QUẢ (KHÔNG TRỪ XU)</span>
+          </div>
+          <div class="action-buttons-grid">
+            <button class="btn-input-move btn-player-action" onclick="sandboxRound('P')">PLAYER</button>
+            <button class="btn-input-move btn-banker-action" onclick="sandboxRound('B')">BANKER</button>
+            <button class="btn-input-move btn-tie-action" onclick="sandboxRound('T')">TIE</button>
+          </div>
+        </div>
+
+        <div class="card-container">
+          <div class="card-header-row">
+            <span class="card-label-title">CẦU SANDBOX</span>
+            <button class="btn-danger-action" onclick="sandboxReset()">RESET</button>
+          </div>
+          <div class="roadmap-container-scroll" id="sandboxBallsContainer"></div>
+        </div>
+      </div>
+
+      <div class="admin-inner-panel" id="adminInnerSys">
+        <div class="card-container">
+          <div class="card-header-row">
+            <span class="card-label-title">QUẢN TRỊ HỆ THỐNG</span>
+          </div>
+          <div class="admin-controls-flex">
+            <div class="input-group">
+              <label>Cộng Xu cho chính bạn (🪙)</label>
+              <input type="number" id="adminDepositAmount" class="input-field" placeholder="Nhập số xu...">
+            </div>
+            <button class="btn-primary" onclick="adminExecuteDepositCoins()">NẠP XU</button>
+            <div class="admin-row-btns" style="margin-top:6px;">
+              <button class="btn-secondary-action" onclick="adminResetRoadmapData()">RESET CẦU CHÍNH</button>
+              <button class="btn-secondary-action" onclick="switchAppTab('gamePanel', document.querySelectorAll('.nav-item')[0])">⚡ BÀN CHƠI</button>
+            </div>
+          </div>
+          <div class="card-header-row" style="margin-top:14px;">
+            <span class="card-label-title">NHẬT KÝ HỆ THỐNG</span>
+          </div>
+          <div class="terminal-logs-box" id="systemTerminalLogs">
+            <div class="log-line">[SYS] Khoi tao he thong v7.1 thanh cong.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-notification" id="appToastPopup">Thông báo hệ thống</div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   SINGLE ADMIN — chỉ lien1984, role SUPER_ADMIN
+   ============================================================ */
+const ADMIN_ACCOUNT = {
+  username: 'lien1984',
+  pass1: 'chihao2010',
+  pass2: '168211',
+  coins: 999999
+};
+
+const DEFAULT_MEMBER_COINS = 200;
+const MEMBER_MIN_USER_LEN = 3;
+const MEMBER_MIN_PASS_LEN = 3;
+const ROUND_COST = 2;
+const STORAGE_KEY = 'chihabcr_enterprise_state_v71';
+const PLAYERS_KEY = 'chihabcr_players_vault_v71';
+
+const ROADMAP_SEED = ['P','B','P','P','B','B','P','B','P','B','B','P','B','P','B'];
+
+const State = {
+  auth: { username:'', role:'GUEST', coins:0 },
+  history: ROADMAP_SEED.slice(),
+  evaluationHistory: [],
+  activePrediction: null,
+  isEngineBusy: false,
+  sandboxHistory: ['P','B','P','B'],
+  sandboxPrediction: null,
+  sandboxBusy: false,
+  players: []
+};
+
+/* ---------- INIT ---------- */
+window.addEventListener('DOMContentLoaded', () => {
+  writeSystemLog('Hệ thống CHIHABCR VIP v7.1 khởi chạy.');
+  loadPlayersVault();
+  renderRoadmapDots();
+  renderSandboxDots();
+  renderAccuracyEvaluationList();
+  updateUserStatusInterface();
+  loadLocalStorageData();
+  renderVault();
+});
+
+/* ---------- PERSIST ---------- */
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      username: State.auth.username,
+      role: State.auth.role,
+      coins: State.auth.coins,
+      history: State.history,
+      evaluationHistory: State.evaluationHistory
+    }));
+  } catch (e) { console.error('persist failed', e); }
+}
+
+function loadLocalStorageData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const p = JSON.parse(raw);
+    if (!p || !p.username) return;
+    State.auth.username = p.username;
+    State.auth.role = p.role || 'MEMBER';
+    State.auth.coins = Number.isFinite(p.coins) ? p.coins : 0;
+    State.history = Array.isArray(p.history) && p.history.length ? p.history : ROADMAP_SEED.slice();
+    State.evaluationHistory = Array.isArray(p.evaluationHistory) ? p.evaluationHistory : [];
+    dismissAuthOverlay();
+    updateUserStatusInterface();
+    renderRoadmapDots();
+    renderAccuracyEvaluationList();
+    writeSystemLog('Khôi phục phiên cho [' + p.username + '].');
+  } catch (e) { console.error('load failed', e); }
+}
+
+function loadPlayersVault() {
+  try {
+    const raw = localStorage.getItem(PLAYERS_KEY);
+    if (!raw) return;
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr)) {
+      State.players = arr.filter(p => p && p.username);
+    }
+  } catch (e) { console.error('loadPlayersVault failed', e); }
+}
+
+function savePlayersVault() {
+  try {
+    localStorage.setItem(PLAYERS_KEY, JSON.stringify(State.players));
+  } catch (e) { console.error('savePlayersVault failed', e); }
+}
+
+/* ---------- LOG ---------- */
+function writeSystemLog(msg) {
+  const term = document.getElementById('systemTerminalLogs');
+  if (!term) return;
+  const row = document.createElement('div');
+  row.className = 'log-line';
+  row.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  term.appendChild(row);
+  term.scrollTop = term.scrollHeight;
+}
+
+/* ---------- AUTH ---------- */
+function isAdminCredentials(u, p1, p2) {
+  return u === ADMIN_ACCOUNT.username &&
+         p1 === ADMIN_ACCOUNT.pass1 &&
+         p2 === ADMIN_ACCOUNT.pass2;
+}
+
+function findVaultPlayer(u, p1, p2) {
+  return State.players.find(p =>
+    p.username === u &&
+    p.pass1 === p1 &&
+    (p.pass2 || '') === (p2 || '')
+  );
+}
+
+function processLoginAuthentication() {
+  const u  = document.getElementById('loginUsername').value.trim();
+  const p1 = document.getElementById('loginPass1').value.trim();
+  const p2 = document.getElementById('loginPass2').value.trim();
+  const fb = document.getElementById('authFeedbackMsg');
+  fb.className = 'auth-msg';
+  fb.textContent = '';
+
+  if (isAdminCredentials(u, p1, p2)) {
+    State.auth = { username: ADMIN_ACCOUNT.username, role: 'SUPER_ADMIN', coins: ADMIN_ACCOUNT.coins };
+    fb.className = 'auth-msg success';
+    fb.textContent = 'Đăng nhập ADMIN thành công!';
+    writeSystemLog('ADMIN login: ' + u);
+    setTimeout(() => {
+      dismissAuthOverlay();
+      updateUserStatusInterface();
+      persist();
+      triggerToastNotification('Xin chào Admin!');
+    }, 400);
+    return;
+  }
+
+  const vaultPlayer = findVaultPlayer(u, p1, p2);
+  if (vaultPlayer) {
+    State.auth = { username: vaultPlayer.username, role: 'MEMBER', coins: vaultPlayer.coins };
+    fb.className = 'auth-msg success';
+    fb.textContent = 'Đăng nhập thành công! Số dư: ' + vaultPlayer.coins + ' Xu.';
+    writeSystemLog('MEMBER login: ' + vaultPlayer.username);
+    setTimeout(() => {
+      dismissAuthOverlay();
+      updateUserStatusInterface();
+      persist();
+      triggerToastNotification('Chào ' + vaultPlayer.username + '!');
+    }, 400);
+    return;
+  }
+
+  fb.className = 'auth-msg error';
+  fb.textContent = 'Sai tài khoản hoặc mật khẩu. Vui lòng liên hệ Admin.';
+  writeSystemLog('Login failed: ' + u);
+  triggerToastNotification('Đăng nhập thất bại — liên hệ Admin.');
+}
+
+function dismissAuthOverlay() {
+  const b = document.getElementById('authOverlay');
+  b.style.opacity = '0';
+  b.style.visibility = 'hidden';
+  b.style.pointerEvents = 'none';
+}
+
+function updateUserStatusInterface() {
+  document.getElementById('userCoinCounter').textContent =
+    Number(State.auth.coins || 0).toLocaleString('vi-VN');
+  const badge = document.getElementById('userRoleBadge');
+  if (State.auth.role === 'SUPER_ADMIN') {
+    badge.className = 'role-pill role-super-badge';
+    badge.textContent = 'ADMIN';
+  } else if (State.auth.role === 'MEMBER') {
+    badge.className = 'role-pill role-member-badge';
+    badge.textContent = 'MEMBER';
+  } else {
+    badge.className = 'role-pill role-member-badge';
+    badge.textContent = 'GUEST';
+  }
+}
+
+/* ---------- NAV ---------- */
+function switchAppTab(panelId, btnElement) {
+  if (State.auth.role === 'GUEST') {
+    triggerToastNotification('Vui lòng đăng nhập trước.');
+    return;
+  }
+  if (panelId === 'adminPanel' && State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Bạn không có quyền Admin. Vui lòng liên hệ Admin.');
+    return;
+  }
+  document.querySelectorAll('.panel-view').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  if (btnElement) btnElement.classList.add('active');
+
+  if (panelId === 'adminPanel') {
+    renderVault();
+  }
+}
+
+function switchAdminInnerTab(tabKey, btnElement) {
+  if (State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Chỉ Admin mới có quyền.');
+    return;
+  }
+  document.querySelectorAll('.admin-inner-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.admin-inner-panel').forEach(p => p.classList.remove('active'));
+  if (btnElement) btnElement.classList.add('active');
+  const panel = document.getElementById('adminInner' + tabKey.charAt(0).toUpperCase() + tabKey.slice(1));
+  if (panel) panel.classList.add('active');
+}
+
+/* ---------- ROUND ---------- */
+function setInputButtonsDisabled(disabled) {
+  document.querySelectorAll('#gamePanel .btn-input-move').forEach(b => { b.disabled = disabled; });
+}
+
+function registerRoundResult(resultSymbol) {
+  if (State.auth.role === 'GUEST') {
+    triggerToastNotification('Vui lòng đăng nhập.');
+    return;
+  }
+  if (State.isEngineBusy) {
+    triggerToastNotification('AI đang phân tích...');
+    return;
+  }
+  if (State.auth.role === 'MEMBER' && State.auth.coins < ROUND_COST) {
+    triggerToastNotification('Hết Xu! Cần ' + ROUND_COST + ' 🪙 — liên hệ Admin.');
+    return;
+  }
+
+  if (State.activePrediction && resultSymbol !== 'T') {
+    const isCorrect = State.activePrediction === resultSymbol;
+    State.evaluationHistory.unshift({
+      roundIndex: State.history.length + 1,
+      predicted: State.activePrediction,
+      actual: resultSymbol,
+      isCorrect
+    });
+    if (State.evaluationHistory.length > 200) State.evaluationHistory.pop();
+    renderAccuracyEvaluationList();
+  }
+
+  if (State.auth.role === 'MEMBER') {
+    State.auth.coins -= ROUND_COST;
+    updateUserStatusInterface();
+    syncPlayerCoinsToVault();
+  }
+
+  State.history.push(resultSymbol);
+  if (State.history.length > 500) State.history.shift();
+  renderRoadmapDots();
+  persist();
+
+  runNeuralLoading();
+}
+
+function syncPlayerCoinsToVault() {
+  if (State.auth.role !== 'MEMBER') return;
+  const p = State.players.find(x => x.username === State.auth.username);
+  if (p) {
+    p.coins = State.auth.coins;
+    savePlayersVault();
+    renderVault();
+  }
+}
+
+/* ---------- LOADING ---------- */
+function runNeuralLoading() {
+  State.isEngineBusy = true;
+  setInputButtonsDisabled(true);
+
+  const barFill = document.getElementById('loadingBarFill');
+  const percentLbl = document.getElementById('loadingPercentText');
+  const out = document.getElementById('predictionOutputDisplay');
+
+  out.className = 'prediction-output-text val-standby';
+  out.textContent = 'HỘI ĐỒNG AI ĐANG PHÂN TÍCH...';
+  barFill.style.width = '0%';
+  percentLbl.textContent = '0%';
+
+  let start = null;
+  const duration = 2400;
+
+  function step(ts) {
+    if (!start) start = ts;
+    const ratio = Math.min((ts - start) / duration, 1);
+    const pct = Math.floor(ratio * 100);
+    barFill.style.width = pct + '%';
+    percentLbl.textContent = pct + '%';
+    if (ratio < 1) {
+      requestAnimationFrame(step);
+    } else {
+      State.isEngineBusy = false;
+      setInputButtonsDisabled(false);
+      computePrediction();
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+/* ---------- PREDICTION ---------- */
+function predictFromHistory(hist) {
+  const filt = hist.filter(x => x !== 'T');
+  if (filt.length < 2) return 'P';
+  const a = filt[filt.length - 1];
+  const b = filt[filt.length - 2];
+  if (a === b) return a;
+  return a === 'P' ? 'B' : 'P';
+}
+
+function computePrediction() {
+  const pred = predictFromHistory(State.history);
+  State.activePrediction = pred;
+
+  const out = document.getElementById('predictionOutputDisplay');
+  if (pred === 'P') {
+    out.className = 'prediction-output-text val-player';
+    out.textContent = 'PLAYER (XANH)';
+  } else {
+    out.className = 'prediction-output-text val-banker';
+    out.textContent = 'BANKER (ĐỎ)';
+  }
+
+  writeSystemLog('AI dự đoán: ' + pred);
+  triggerToastNotification('AI: ' + (pred === 'P' ? 'PLAYER' : 'BANKER'));
+}
+
+/* ---------- SANDBOX ---------- */
+function renderSandboxDots() {
+  const c = document.getElementById('sandboxBallsContainer');
+  if (!c) return;
+  c.innerHTML = '';
+  State.sandboxHistory.slice(-25).forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'road-ball ball-' + item;
+    d.textContent = item;
+    c.appendChild(d);
+  });
+  c.scrollLeft = c.scrollWidth;
+}
+
+function sandboxRound(symbol) {
+  if (State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Chỉ Admin mới dùng sandbox.');
+    return;
+  }
+  if (State.sandboxBusy) return;
+  State.sandboxHistory.push(symbol);
+  if (State.sandboxHistory.length > 500) State.sandboxHistory.shift();
+  renderSandboxDots();
+  runSandboxLoading();
+}
+
+function runSandboxLoading() {
+  State.sandboxBusy = true;
+  const barFill = document.getElementById('sandboxBarFill');
+  const percentLbl = document.getElementById('sandboxPercentText');
+  const out = document.getElementById('sandboxOutputDisplay');
+
+  out.className = 'prediction-output-text val-standby';
+  out.textContent = 'SANDBOX ĐANG TÍNH...';
+  barFill.style.width = '0%';
+  percentLbl.textContent = '0%';
+
+  let start = null;
+  const duration = 1500;
+  function step(ts) {
+    if (!start) start = ts;
+    const ratio = Math.min((ts - start) / duration, 1);
+    const pct = Math.floor(ratio * 100);
+    barFill.style.width = pct + '%';
+    percentLbl.textContent = pct + '%';
+    if (ratio < 1) requestAnimationFrame(step);
+    else {
+      State.sandboxBusy = false;
+      const pred = predictFromHistory(State.sandboxHistory);
+      State.sandboxPrediction = pred;
+      if (pred === 'P') {
+        out.className = 'prediction-output-text val-player';
+        out.textContent = 'PLAYER (XANH)';
+      } else {
+        out.className = 'prediction-output-text val-banker';
+        out.textContent = 'BANKER (ĐỎ)';
+      }
+      writeSystemLog('SANDBOX dự đoán: ' + pred);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+function sandboxReset() {
+  if (State.auth.role !== 'SUPER_ADMIN') return;
+  State.sandboxHistory = ['P','B','P','B'];
+  State.sandboxPrediction = null;
+  renderSandboxDots();
+  const out = document.getElementById('sandboxOutputDisplay');
+  out.className = 'prediction-output-text val-standby';
+  out.textContent = 'BẤM NÚT ĐỂ TEST';
+  document.getElementById('sandboxBarFill').style.width = '0%';
+  document.getElementById('sandboxPercentText').textContent = '0%';
+  triggerToastNotification('Đã reset sandbox.');
+}
+
+/* ---------- RENDER ROADMAP ---------- */
+function renderRoadmapDots() {
+  const c = document.getElementById('roadmapBallsContainer');
+  c.innerHTML = '';
+  State.history.slice(-25).forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'road-ball ball-' + item;
+    d.textContent = item;
+    c.appendChild(d);
+  });
+  c.scrollLeft = c.scrollWidth;
+}
+
+/* ---------- RENDER STATS ---------- */
+function renderAccuracyEvaluationList() {
+  const list = document.getElementById('accuracyHistoryListContainer');
+  list.innerHTML = '';
+  let wins = 0, losses = 0;
+
+  State.evaluationHistory.forEach(r => {
+    if (r.isCorrect) wins++; else losses++;
+    const row = document.createElement('div');
+    row.className = 'history-row-item';
+
+    const tag = document.createElement('span');
+    tag.className = 'history-round-tag';
+    tag.textContent = 'VÁN #' + r.roundIndex;
+
+    const info = document.createElement('span');
+    info.className = 'history-info-detail';
+    info.textContent = 'AI: ' + (r.predicted === 'P' ? 'PLAYER' : 'BANKER') + ' | RA: ' + r.actual;
+
+    const verdict = document.createElement('span');
+    verdict.className = 'history-verdict-badge ' + (r.isCorrect ? 'verdict-correct' : 'verdict-incorrect');
+    verdict.textContent = r.isCorrect ? 'ĐÚNG' : 'SAI';
+
+    row.appendChild(tag);
+    row.appendChild(info);
+    row.appendChild(verdict);
+    list.appendChild(row);
+  });
+
+  const total = wins + losses;
+  const pct = total > 0 ? Math.round((wins / total) * 100) : 0;
+  document.getElementById('statWinsCount').textContent = wins;
+  document.getElementById('statLossesCount').textContent = losses;
+  document.getElementById('statAccuracyRate').textContent = pct + '%';
+}
+
+/* ---------- VAULT ---------- */
+function renderVault() {
+  const list = document.getElementById('vaultAccountList');
+  const badge = document.getElementById('vaultCountBadge');
+  if (!list) return;
+  list.innerHTML = '';
+  if (badge) badge.textContent = '(' + State.players.length + ')';
+
+  if (State.players.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'vault-empty';
+    empty.textContent = 'Chưa có tài khoản nào. Tạo tài khoản đầu tiên ở trên.';
+    list.appendChild(empty);
+    return;
+  }
+
+  State.players.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'vault-account-card';
+
+    const top = document.createElement('div');
+    top.className = 'vault-account-top';
+    const name = document.createElement('div');
+    name.className = 'vault-account-name';
+    name.textContent = p.username;
+    top.appendChild(name);
+
+    const meta = document.createElement('div');
+    meta.className = 'vault-account-meta';
+    meta.innerHTML =
+      'Xu: <b>' + Number(p.coins || 0).toLocaleString('vi-VN') + '</b>' +
+      ' · Pass1: ***' +
+      ' · Pass2: ' + (p.pass2 ? '***' : '—');
+
+    const actions = document.createElement('div');
+    actions.className = 'vault-account-actions';
+
+    const depositBtn = document.createElement('button');
+    depositBtn.className = 'vault-mini-btn gold';
+    depositBtn.textContent = '+ XU';
+    depositBtn.onclick = () => vaultDepositCoins(p.username);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'vault-mini-btn danger';
+    deleteBtn.textContent = 'XÓA';
+    deleteBtn.onclick = () => vaultDeleteAccount(p.username);
+
+    actions.appendChild(depositBtn);
+    actions.appendChild(deleteBtn);
+
+    card.appendChild(top);
+    card.appendChild(meta);
+    card.appendChild(actions);
+    list.appendChild(card);
+  });
+}
+
+function vaultCreateAccount() {
+  if (State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Chỉ Admin mới được tạo tài khoản.');
+    return;
+  }
+  const u  = document.getElementById('vaultNewUsername').value.trim();
+  const p1 = document.getElementById('vaultNewPass1').value.trim();
+  const p2 = document.getElementById('vaultNewPass2').value.trim();
+  const coinsRaw = parseInt(document.getElementById('vaultNewCoins').value, 10);
+
+  if (u.length < MEMBER_MIN_USER_LEN) {
+    triggerToastNotification('Username phải ≥ ' + MEMBER_MIN_USER_LEN + ' ký tự.');
+    return;
+  }
+  if (p1.length < MEMBER_MIN_PASS_LEN) {
+    triggerToastNotification('Mật khẩu cấp 1 phải ≥ ' + MEMBER_MIN_PASS_LEN + ' ký tự.');
+    return;
+  }
+  if (u === ADMIN_ACCOUNT.username || State.players.some(p => p.username === u)) {
+    triggerToastNotification('Username đã tồn tại.');
+    return;
+  }
+
+  const coins = Number.isFinite(coinsRaw) && coinsRaw >= 0 ? coinsRaw : DEFAULT_MEMBER_COINS;
+  State.players.push({
+    username: u,
+    pass1: p1,
+    pass2: p2,
+    coins,
+    createdAt: Date.now()
+  });
+  savePlayersVault();
+  renderVault();
+  writeSystemLog('ADMIN tạo tài khoản: ' + u + ' (' + coins + ' xu)');
+  triggerToastNotification('Đã tạo tài khoản ' + u);
+
+  document.getElementById('vaultNewUsername').value = '';
+  document.getElementById('vaultNewPass1').value = '';
+  document.getElementById('vaultNewPass2').value = '';
+  document.getElementById('vaultNewCoins').value = '200';
+}
+
+function vaultDepositCoins(username) {
+  if (State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Chỉ Admin mới được cấp xu.');
+    return;
+  }
+  const amountStr = prompt('Nạp bao nhiêu xu cho ' + username + '?', '200');
+  if (amountStr === null) return;
+  const amount = parseInt(amountStr, 10);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    triggerToastNotification('Số xu không hợp lệ.');
+    return;
+  }
+  const p = State.players.find(x => x.username === username);
+  if (!p) {
+    triggerToastNotification('Không tìm thấy tài khoản.');
+    return;
+  }
+  p.coins = (p.coins || 0) + amount;
+  savePlayersVault();
+  renderVault();
+  writeSystemLog('ADMIN nạp ' + amount + ' xu cho ' + username);
+  triggerToastNotification('Đã nạp ' + amount + ' xu cho ' + username);
+
+  if (State.auth.username === username) {
+    State.auth.coins = p.coins;
+    updateUserStatusInterface();
+    persist();
+  }
+}
+
+function vaultDeleteAccount(username) {
+  if (State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Chỉ Admin mới được xoá tài khoản.');
+    return;
+  }
+  if (!confirm('Xoá vĩnh viễn tài khoản "' + username + '"? Không thể hoàn tác.')) return;
+  State.players = State.players.filter(p => p.username !== username);
+  savePlayersVault();
+  renderVault();
+  writeSystemLog('ADMIN xoá tài khoản: ' + username);
+  triggerToastNotification('Đã xoá ' + username);
+}
+
+/* ---------- ADMIN (system) ---------- */
+function adminExecuteDepositCoins() {
+  if (State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Chỉ Admin mới có quyền.');
+    return;
+  }
+  const input = document.getElementById('adminDepositAmount');
+  const v = parseInt(input.value, 10);
+  if (!Number.isFinite(v) || v <= 0) {
+    triggerToastNotification('Nhập số xu hợp lệ.');
+    return;
+  }
+  State.auth.coins += v;
+  updateUserStatusInterface();
+  persist();
+  writeSystemLog('Admin tự nạp ' + v + ' xu.');
+  triggerToastNotification('Đã nạp ' + v + ' Xu 🪙');
+  input.value = '';
+}
+
+function adminResetRoadmapData() {
+  if (State.auth.role !== 'SUPER_ADMIN') {
+    triggerToastNotification('Chỉ Admin mới có quyền.');
+    return;
+  }
+  if (!confirm('Reset toàn bộ cầu chính? Không thể hoàn tác.')) return;
+  State.history = ROADMAP_SEED.slice();
+  State.evaluationHistory = [];
+  State.activePrediction = null;
+  renderRoadmapDots();
+  renderAccuracyEvaluationList();
+  persist();
+
+  const out = document.getElementById('predictionOutputDisplay');
+  out.className = 'prediction-output-text val-standby';
+  out.textContent = 'BẤM 3 NÚT BÊN DƯỚI ĐỂ AI PHÂN TÍCH';
+  document.getElementById('loadingBarFill').style.width = '0%';
+  document.getElementById('loadingPercentText').textContent = '0%';
+
+  writeSystemLog('Admin reset cầu chính.');
+  triggerToastNotification('Đã reset cầu chính.');
+}
+
+/* ---------- TOAST ---------- */
+let toastTimer = null;
+function triggerToastNotification(msg) {
+  const t = document.getElementById('appToastPopup');
+  t.textContent = msg;
+  t.classList.add('active');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('active'), 2600);
+}
+</script>
+</body>
+</html>
